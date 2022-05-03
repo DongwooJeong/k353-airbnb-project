@@ -1,0 +1,11 @@
+1st place team reg
+
+ResponseRate + OverallRating + BookingQ2 + BlockedMar + BlockedJun + BlockedMay + LogPNR + LogPMR + LogBookingQ1 + LogBookingQ2 + LogBookingJun + BookingApr + BlockedQ2 + BookingJun + LogBlockedQ1 + LogBlockedQ2 + BlockedQ1 + NumberofReviews
+
+LogBookingQ1 + LogBookingQ2 + LogBlockedQ1 + LogBlockedQ2 + LogBookingJun + BookingApr + BookingJun + BlockedQ1 + BlockedQ2 + BlockedMar + BlockedMay + BlockedJun
+
+4/26 note
+add log, remove BookingJan, BlockedJan, BookingMay, BlockedApr
+how to include overallrating
+outliers for more predictors
+price log?
