@@ -269,6 +269,9 @@ property_info$LogPMR[property_info$LogPMR =="-Inf"] = 0
 property_info$LogPWR = log(property_info$PublishedWeeklyRate)
 property_info$LogPWR[property_info$LogPWR =="-Inf"] = 0
 
+property_info$LogLPJan = log(property_info$ListPriceJan)
+property_info$LogLPJan[property_info$LogLPJan =="-Inf"] = 0
+
 # new Data anomalies
 ## rare property type
 tb_property_type = table(property_info$PropertyType)
