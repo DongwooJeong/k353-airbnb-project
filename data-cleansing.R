@@ -186,6 +186,7 @@ property_info = merge(x = property_info, y = agg_price_jun, by = 'PropertyID', a
 property_info$ListPriceJun[is.na(property_info$ListPriceJun)] = 0
 
 #### Anomalies
+sum(is.na(property_info$PropertyID))
 
 tb_neighborhood = table(property_info$Neighborhood)
 rare_neighborhood = names(tb_neighborhood)[tb_neighborhood<=20]
@@ -206,6 +207,9 @@ property_info$OverallRating[is.na(property_info$OverallRating)] = 0
 
 property_info$PropertyType[is.na(property_info$PropertyType)] = 0
 property_info$ListingType[is.na(property_info$ListingType)] = 0
+
+property_info$NumberofPhotos[is.na(property_info$NumberofPhotos)] = 0
+property_info$HostID[is.na(property_info$HostID)] = 0
 ##################
 # Outliers
 property_info$NumberofReviews[property_info$NumberofReviews>150]=150
@@ -272,12 +276,29 @@ property_info$LogPWR[property_info$LogPWR =="-Inf"] = 0
 property_info$LogLPJan = log(property_info$ListPriceJan)
 property_info$LogLPJan[property_info$LogLPJan =="-Inf"] = 0
 
+property_info$LogLPFeb = log(property_info$ListPriceFeb)
+property_info$LogLPFeb[property_info$LogLPFeb =="-Inf"] = 0
+
+property_info$LogLPMar = log(property_info$ListPriceMar)
+property_info$LogLPMar[property_info$LogLPMar =="-Inf"] = 0
+
+property_info$LogLPApr = log(property_info$ListPriceApr)
+property_info$LogLPApr[property_info$LogLPApr =="-Inf"] = 0
+
+property_info$LogLPMay = log(property_info$ListPriceMay)
+property_info$LogLPMay[property_info$LogLPMay =="-Inf"] = 0
+
+property_info$LogLPJun = log(property_info$ListPriceJun)
+property_info$LogLPJun[property_info$LogLPJun =="-Inf"] = 0
+
+# histogram
+# hist(property_info$BookingFeb)
+
 # new Data anomalies
 ## rare property type
 tb_property_type = table(property_info$PropertyType)
 rare_property_types = names(tb_property_type)[tb_property_type<=50]
 property_info$PropertyType[property_info$PropertyType %in% rare_property_types] = "rare property type"
-
 
 # Data set
 property_info_test = property_info[property_info$PropertyID %in% PropertyID_test, ]
@@ -286,78 +307,28 @@ property_info_train = merge(x = property_info_train, y = reserve_2016Q3_train, b
 property_info_train = merge(x = property_info_train, y = blocked_2016Q3_train, by = 'PropertyID', all.x = TRUE)
 property_info_train = merge(x = property_info_train, y = price_2016Q3_train, by = 'PropertyID', all.x = TRUE)
 
-# booking regression - 4/28 -2
-reg_bookingQ3_428_2 = lm(formula = NumReserveDays2016Q3 ~ ResponseRate + OverallRating + NumberofReviews + LogPNR + LogPMR + LogPWR +
-                     PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + ListingType + PropertyType +
+# booking regression
+reg_bookingQ3 = lm(formula = NumReserveDays2016Q3 ~ ResponseRate + OverallRating + NumberofReviews + LogPNR + LogPMR + LogPWR + NumberofPhotos +
+                     PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + ListingType + PropertyType + PropertyID + HostID +
                      BookingQ2 + BlockedQ1 + BlockedQ2 + BookingJun + BlockedMar + BlockedMay + BlockedJun + 
                      BookingMar + BookingApr + BlockedJan +
                      LogBookingQ2 + LogBlockedQ2 + LogBookingApr + LogBookingJun + LogBlockedJan +
-                     ListPriceJan + ListPriceMar + ListPriceJun, 
+                     ListPriceJan + ListPriceMar + ListPriceJun + LogLPJan + LogLPFeb + LogLPMar + LogLPApr + LogLPMay + LogLPJun, 
                    data = property_info_train)
 
-# blocked regression - 4/28 -2
-reg_blockedQ3_428_2 = lm(formula = NumBlockedDays2016Q3 ~ Neighborhood + Superhost + OverallRating + NumberofReviews + ListingType +
-                     ResponseRate + Bedrooms + Bathrooms + PropertyType + PublishedMonthlyRate + PublishedNightlyRate + 
+# blocked regression
+reg_blockedQ3 = lm(formula = NumBlockedDays2016Q3 ~ Neighborhood + Superhost + OverallRating + NumberofReviews + ListingType + PropertyID +
+                     ResponseRate + Bedrooms + Bathrooms + PropertyType + PublishedMonthlyRate + PublishedNightlyRate + NumberofPhotos + HostID +
                      BookingJan + BookingApr + BookingMay + BookingJun + BlockedJan + BlockedFeb + 
                      BlockedApr + BlockedMay + BlockedQ1 + BlockedQ2 + ListPriceQ2 +
                      ListPriceApr + ListPriceJun + LogBookingApr + LogBookingMay +
-                     LogBookingQ2 + LogBlockedQ1 + LogBlockedQ2 + LogPNR + LogPMR + LogPWR, data = property_info_train)
+                     LogBookingQ2 + LogBlockedQ1 + LogBlockedQ2 + LogPNR + LogPMR + LogPWR + LogLPJan + LogLPJun, data = property_info_train)
 
-# price regression - 4/28 -2
-reg_priceQ3_428_2 = lm(formula = Price2016Q3 ~ NumberofReviews + ResponseRate + Bathrooms + ListingType + PropertyType + 
-                   PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + LogPNR + LogPMR +
+# price regression
+reg_priceQ3 = lm(formula = Price2016Q3 ~ NumberofReviews + ResponseRate + Bathrooms + ListingType + PropertyType + NumberofPhotos +
+                   PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + LogPNR + LogPMR + 
                    BlockedQ1 + BlockedQ2 + BookingJan + BookingFeb + BlockedMar + BookingJun + ListPriceJan + ListPriceJun +
-                   LogBookingMar + LogBookingQ2, data = property_info_train)
-
-# booking regression - 4/26
-reg_bookingQ3_426 = lm(formula = NumReserveDays2016Q3 ~ Neighborhood + Superhost + NumberofReviews + 
-                     ResponseRate + Bedrooms + Bathrooms + PropertyType + PublishedMonthlyRate + 
-                     BookingJan + BlockedJan + BookingFeb + BlockedFeb + BookingMar + BlockedMar + 
-                     BookingApr + BlockedApr + BookingMay + BlockedMay + BookingJun + BlockedJun +
-                     ListPriceJan + ListPriceFeb + ListPriceMar + ListPriceApr +ListPriceMay + ListPriceJun, 
-                   data = property_info_train)
-
-# blocked regression - 4/26
-reg_blockedQ3_426 = lm(formula = NumBlockedDays2016Q3 ~ Neighborhood + Superhost + NumberofReviews + 
-                     ResponseRate + Bedrooms + Bathrooms + PropertyType + PublishedMonthlyRate + 
-                     BookingFeb + BlockedFeb + BookingMar + BlockedMar + 
-                     BookingApr + BlockedMay + BookingJun + BlockedJun +
-                     ListPriceJan + ListPriceFeb + ListPriceMar + ListPriceApr + ListPriceMay + ListPriceJun + 
-                     LogBookingQ1 + LogBookingQ2 + LogBlockedQ1 + LogBlockedQ2 + LogBookingJun + BlockedQ1 +
-                     BlockedQ2 + LogPNR + LogPMR, data = property_info_train)
-
-# price regression - 4/26
-reg_priceQ3_426 = lm(formula = Price2016Q3 ~ Neighborhood + Superhost + NumberofReviews + 
-                   ResponseRate + Bedrooms + Bathrooms + PropertyType + PublishedMonthlyRate + 
-                   BookingFeb + BlockedFeb + BookingMar + BlockedMar + 
-                   BookingApr + BlockedMay + BookingJun + BlockedJun +
-                   ListPriceJan + ListPriceFeb + ListPriceMar + ListPriceApr + ListPriceMay + ListPriceJun + 
-                   LogBookingQ1 + LogBookingQ2 + LogBlockedQ1 + LogBlockedQ2 + LogBookingJun + BlockedQ1 +
-                   BlockedQ2 + LogPNR + LogPMR, data = property_info_train)
-
-# booking regression - 4/28 -1
-reg_bookingQ3_428_1 = lm(formula = NumReserveDays2016Q3 ~ ResponseRate + OverallRating + NumberofReviews + LogPNR + LogPMR + 
-                     PublishedMonthlyRate + PublishedNightlyRate +
-                     BookingQ2 + BlockedQ1 + BlockedQ2 + BookingJun + BlockedMar + BlockedMay + BlockedJun + 
-                     BookingMar + BookingApr + BlockedJan +
-                     LogBookingQ2 + LogBlockedQ2 + LogBookingApr + LogBookingJun + LogBlockedJan +
-                     ListPriceJan + ListPriceFeb + ListPriceMar + ListPriceApr + ListPriceMay + ListPriceJun, 
-                   data = property_info_train)
-
-# blocked regression - 4/28 -1
-reg_blockedQ3_428_1 = lm(formula = NumBlockedDays2016Q3 ~ Neighborhood + Superhost + NumberofReviews + 
-                     ResponseRate + Bedrooms + Bathrooms + PropertyType + PublishedMonthlyRate + 
-                     BookingFeb + BlockedFeb + BookingMar + BlockedMar + 
-                     BookingApr + BlockedMay + BookingJun + BlockedJun +
-                     ListPriceJan + ListPriceFeb + ListPriceMar + ListPriceApr + ListPriceMay + ListPriceJun + 
-                     LogBookingQ1 + LogBookingQ2 + LogBlockedQ1 + LogBlockedQ2 + LogBookingJun + BlockedQ1 +
-                     BlockedQ2 + LogPNR + LogPMR, data = property_info_train)
-
-# price regression - 4/28 -1
-reg_priceQ3_428_1 = lm(formula = Price2016Q3 ~ NumberofReviews + ResponseRate + Bathrooms + PublishedMonthlyRate + 
-                   BlockedQ1 + BlockedQ2 + BookingJan + BookingFeb + BlockedMar + BookingJun +
-                   ListPriceJan + ListPriceFeb + ListPriceMar + ListPriceApr + ListPriceMay + ListPriceJun + 
-                   LogBookingMar + LogBookingQ2 + LogPNR + LogPMR, data = property_info_train)
+                   LogBookingMar + LogBookingQ2 + LogLPMar + LogLPApr, data = property_info_train)
 
 # save
 save(property_info_train, property_info_test, file = 'C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/k353-airbnb-project/data-cleansing.rdata')

@@ -1,27 +1,9 @@
 load('C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/k353-airbnb-project/data-cleansing.rdata')
 
 # prediction
-pred_bookingQ3_1 = predict(object = reg_bookingQ3_426, newdata = property_info_test)
-pred_blockedQ3_1 = predict(object = reg_blockedQ3_426, newdata = property_info_test)
-pred_priceQ3_1 = predict(object = reg_priceQ3_426, newdata = property_info_test)
-
-pred_bookingQ3_2 = predict(object = reg_bookingQ3_428_1, newdata = property_info_test)
-pred_blockedQ3_2 = predict(object = reg_blockedQ3_428_1, newdata = property_info_test)
-pred_priceQ3_2 = predict(object = reg_priceQ3_428_1, newdata = property_info_test)
-
-pred_bookingQ3_3 = predict(object = reg_bookingQ3_428_2, newdata = property_info_test)
-pred_blockedQ3_3 = predict(object = reg_blockedQ3_428_2, newdata = property_info_test)
-pred_priceQ3_3 = predict(object = reg_priceQ3_428_2, newdata = property_info_test)
-
-#### bagging
-# pred_bookingQ3 = (pred_bookingQ3_1 + pred_bookingQ3_2 + pred_bookingQ3_3)/3
-# pred_blockedQ3 = (pred_blockedQ3_1 + pred_blockedQ3_2 + pred_blockedQ3_3)/3
-# pred_priceQ3 = (pred_priceQ3_1 + pred_priceQ3_2 + pred_priceQ3_3)/3
-
-#
-pred_bookingQ3 = pred_bookingQ3_3
-pred_blockedQ3 = pred_blockedQ3_3
-pred_priceQ3 = pred_priceQ3_3
+pred_bookingQ3 = predict(object = reg_bookingQ3, newdata = property_info_test)
+pred_blockedQ3 = predict(object = reg_blockedQ3, newdata = property_info_test)
+pred_priceQ3 = predict(object = reg_priceQ3, newdata = property_info_test)
 
 # pred anomalies
 pred_bookingQ3[is.na(pred_bookingQ3)]=0
