@@ -300,7 +300,7 @@ reg_blockedQ3_428_2 = lm(formula = NumBlockedDays2016Q3 ~ Neighborhood + Superho
                      ListPriceApr + ListPriceJun + LogBookingApr + LogBookingMay +
                      LogBookingQ2 + LogBlockedQ1 + LogBlockedQ2 + LogPNR + LogPMR + LogPWR, data = property_info_train)
 
-# price regression
+# price regression - 4/28 -2
 reg_priceQ3_428_2 = lm(formula = Price2016Q3 ~ NumberofReviews + ResponseRate + Bathrooms + ListingType + PropertyType + 
                    PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + LogPNR + LogPMR +
                    BlockedQ1 + BlockedQ2 + BookingJan + BookingFeb + BlockedMar + BookingJun + ListPriceJan + ListPriceJun +
@@ -357,6 +357,6 @@ reg_priceQ3_428_1 = lm(formula = Price2016Q3 ~ NumberofReviews + ResponseRate + 
                    LogBookingMar + LogBookingQ2 + LogPNR + LogPMR, data = property_info_train)
 
 # save
-save(property_info_train, property_info_test, file = 'C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/data-cleansing.rdata')
+save(property_info_train, property_info_test, file = 'C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/k353-airbnb-project/data-cleansing.rdata')
 
 

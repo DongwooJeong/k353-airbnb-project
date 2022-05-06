@@ -1,6 +1,5 @@
-load('C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/data-cleansing.rdata')
+load('C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/k353-airbnb-project/data-cleansing.rdata')
 
-# property_info_train$PropertyType[is.na(property_info_train$PropertyType)] = 0
 # Price
 n_round = 20
 set.seed(0)

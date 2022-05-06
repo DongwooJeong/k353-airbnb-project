@@ -1,4 +1,4 @@
-load('C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/data-cleansing.rdata')
+load('C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/k353-airbnb-project/data-cleansing.rdata')
 
 # prediction
 pred_bookingQ3_1 = predict(object = reg_bookingQ3_426, newdata = property_info_test)
@@ -14,9 +14,14 @@ pred_blockedQ3_3 = predict(object = reg_blockedQ3_428_2, newdata = property_info
 pred_priceQ3_3 = predict(object = reg_priceQ3_428_2, newdata = property_info_test)
 
 #### bagging
-pred_bookingQ3 = (pred_bookingQ3_1 + pred_bookingQ3_2 + pred_bookingQ3_3)/3
-pred_blockedQ3 = (pred_blockedQ3_1 + pred_blockedQ3_2 + pred_blockedQ3_3)/3
-pred_priceQ3 = (pred_priceQ3_1 + pred_priceQ3_2 + pred_priceQ3_3)/3
+# pred_bookingQ3 = (pred_bookingQ3_1 + pred_bookingQ3_2 + pred_bookingQ3_3)/3
+# pred_blockedQ3 = (pred_blockedQ3_1 + pred_blockedQ3_2 + pred_blockedQ3_3)/3
+# pred_priceQ3 = (pred_priceQ3_1 + pred_priceQ3_2 + pred_priceQ3_3)/3
+
+#
+pred_bookingQ3 = pred_bookingQ3_3
+pred_blockedQ3 = pred_blockedQ3_3
+pred_priceQ3 = pred_priceQ3_3
 
 # pred anomalies
 pred_bookingQ3[is.na(pred_bookingQ3)]=0
@@ -36,9 +41,8 @@ checkmin = c(min(pred_bookingQ3),min(pred_blockedQ3),min(pred_priceQ3))
 checkmax = c(max(pred_bookingQ3),max(pred_blockedQ3))
 checksum = max(pred_bookingQ3+pred_blockedQ3)
 
-
 # Incentive optimization
-source("C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/profit function share.R")
+source("C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/k353-airbnb-project/profit function share.R")
 
 incentive = rep(NA, nrow(property_info_test))
 
@@ -52,7 +56,7 @@ close(pb)
 
 
 
-save(incentive, file = 'C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/Airbob.rdata')
+save(incentive, file = 'C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/k353-airbnb-project/Airbob.rdata')
 
 
 
