@@ -210,6 +210,16 @@ property_info$ListingType[is.na(property_info$ListingType)] = 0
 
 property_info$NumberofPhotos[is.na(property_info$NumberofPhotos)] = 0
 property_info$HostID[is.na(property_info$HostID)] = 0
+
+property_info$ResponseTimemin[is.na(property_info$ResponseTimemin)] = 0
+
+sum(is.na(property_info$CancellationPolicy))
+property_info$CleaningFee[is.na(property_info$CleaningFee)] = 0
+
+property_info$SecurityDeposit[is.na(property_info$SecurityDeposit)] = 0
+
+property_info$ExtraPeopleFee[is.na(property_info$ExtraPeopleFee)] = 0
+
 ##################
 # Outliers
 property_info$NumberofReviews[property_info$NumberofReviews>150]=150
@@ -292,7 +302,7 @@ property_info$LogLPJun = log(property_info$ListPriceJun)
 property_info$LogLPJun[property_info$LogLPJun =="-Inf"] = 0
 
 # histogram
-# hist(property_info$BookingFeb)
+# hist(property_info$ResponseTimemin)
 
 # new Data anomalies
 ## rare property type
@@ -309,9 +319,9 @@ property_info_train = merge(x = property_info_train, y = price_2016Q3_train, by 
 
 # booking regression
 reg_bookingQ3 = lm(formula = NumReserveDays2016Q3 ~ ResponseRate + OverallRating + NumberofReviews + LogPNR + LogPMR + LogPWR + NumberofPhotos +
-                     PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + ListingType + PropertyType + PropertyID + HostID +
-                     BookingQ2 + BlockedQ1 + BlockedQ2 + BookingJun + BlockedMar + BlockedMay + BlockedJun + 
-                     BookingMar + BookingApr + BlockedJan +
+                     PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + ListingType + PropertyType + PropertyID + HostID + BusinessReady +
+                     BookingQ2 + BlockedQ1 + BlockedQ2 + BookingJun + BlockedMar + BlockedMay + BlockedJun + CreatedDate +  MaxGuests + ExtraPeopleFee + 
+                     BookingMar + BookingApr + BlockedJan + CleaningFee + InstantbookEnabled + Latitude + Longitude +
                      LogBookingQ2 + LogBlockedQ2 + LogBookingApr + LogBookingJun + LogBlockedJan +
                      ListPriceJan + ListPriceMar + ListPriceJun + LogLPJan + LogLPFeb + LogLPMar + LogLPApr + LogLPMay + LogLPJun, 
                    data = property_info_train)
@@ -319,15 +329,15 @@ reg_bookingQ3 = lm(formula = NumReserveDays2016Q3 ~ ResponseRate + OverallRating
 # blocked regression
 reg_blockedQ3 = lm(formula = NumBlockedDays2016Q3 ~ Neighborhood + Superhost + OverallRating + NumberofReviews + ListingType + PropertyID +
                      ResponseRate + Bedrooms + Bathrooms + PropertyType + PublishedMonthlyRate + PublishedNightlyRate + NumberofPhotos + HostID +
-                     BookingJan + BookingApr + BookingMay + BookingJun + BlockedJan + BlockedFeb + 
-                     BlockedApr + BlockedMay + BlockedQ1 + BlockedQ2 + ListPriceQ2 +
-                     ListPriceApr + ListPriceJun + LogBookingApr + LogBookingMay +
+                     BookingJan + BookingApr + BookingMay + BookingJun + BlockedJan + BlockedFeb + CreatedDate + ResponseTimemin + ExtraPeopleFee +
+                     BlockedApr + BlockedMay + BlockedQ1 + BlockedQ2 + ListPriceQ2 + CleaningFee + MinimumStay + BusinessReady + 
+                     ListPriceApr + ListPriceJun + LogBookingApr + LogBookingMay + 
                      LogBookingQ2 + LogBlockedQ1 + LogBlockedQ2 + LogPNR + LogPMR + LogPWR + LogLPJan + LogLPJun, data = property_info_train)
 
 # price regression
-reg_priceQ3 = lm(formula = Price2016Q3 ~ NumberofReviews + ResponseRate + Bathrooms + ListingType + PropertyType + NumberofPhotos +
-                   PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + LogPNR + LogPMR + 
-                   BlockedQ1 + BlockedQ2 + BookingJan + BookingFeb + BlockedMar + BookingJun + ListPriceJan + ListPriceJun +
+reg_priceQ3 = lm(formula = Price2016Q3 ~ NumberofReviews + ResponseRate + Bathrooms + ListingType + PropertyType + NumberofPhotos + BusinessReady +
+                   PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + LogPNR + LogPMR + MaxGuests + CleaningFee + MinimumStay +
+                   BlockedQ1 + BlockedQ2 + BookingJan + BookingFeb + BlockedMar + BookingJun + ListPriceJan + ListPriceJun + SecurityDeposit + Latitude + Longitude +
                    LogBookingMar + LogBookingQ2 + LogLPMar + LogLPApr, data = property_info_train)
 
 # save

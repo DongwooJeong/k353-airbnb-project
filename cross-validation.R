@@ -6,9 +6,9 @@ set.seed(0)
 property_info_train$CVLabel = sample(x = 1:n_round, size = nrow(property_info_train), replace = TRUE)
 cv_mse_vec_p = rep(NA, n_round)
 for (idx in 1:n_round) {
-  lr_model_p = lm(formula = Price2016Q3 ~ NumberofReviews + ResponseRate + Bathrooms + ListingType + PropertyType + NumberofPhotos +
-                    PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + LogPNR + LogPMR + 
-                    BlockedQ1 + BlockedQ2 + BookingJan + BookingFeb + BlockedMar + BookingJun + ListPriceJan + ListPriceJun +
+  lr_model_p = lm(formula = Price2016Q3 ~ NumberofReviews + ResponseRate + Bathrooms + ListingType + PropertyType + NumberofPhotos + BusinessReady +
+                    PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + LogPNR + LogPMR + MaxGuests + CleaningFee + MinimumStay +
+                    BlockedQ1 + BlockedQ2 + BookingJan + BookingFeb + BlockedMar + BookingJun + ListPriceJan + ListPriceJun + SecurityDeposit + Latitude + Longitude +
                     LogBookingMar + LogBookingQ2 + LogLPMar + LogLPApr, 
                   data = property_info_train[property_info_train$CVLabel != idx, ])
   lr_pred_p = predict(object = lr_model_p, newdata = property_info_train[property_info_train$CVLabel==idx,])
@@ -23,9 +23,9 @@ property_info_train$CVLabel = sample(x = 1:n_round, size = nrow(property_info_tr
 cv_mse_vec_r = rep(NA, n_round)
 for (idx in 1:n_round) {
   lr_model_r = lm(formula = NumReserveDays2016Q3 ~ ResponseRate + OverallRating + NumberofReviews + LogPNR + LogPMR + LogPWR + NumberofPhotos +
-                    PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + ListingType + PropertyType + PropertyID + HostID +
-                    BookingQ2 + BlockedQ1 + BlockedQ2 + BookingJun + BlockedMar + BlockedMay + BlockedJun + 
-                    BookingMar + BookingApr + BlockedJan +
+                    PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + ListingType + PropertyType + PropertyID + HostID + BusinessReady +
+                    BookingQ2 + BlockedQ1 + BlockedQ2 + BookingJun + BlockedMar + BlockedMay + BlockedJun + CreatedDate +  MaxGuests + ExtraPeopleFee + 
+                    BookingMar + BookingApr + BlockedJan + CleaningFee + InstantbookEnabled + Latitude + Longitude + 
                     LogBookingQ2 + LogBlockedQ2 + LogBookingApr + LogBookingJun + LogBlockedJan +
                     ListPriceJan + ListPriceMar + ListPriceJun + LogLPJan + LogLPFeb + LogLPMar + LogLPApr + LogLPMay + LogLPJun, 
                 data = property_info_train[property_info_train$CVLabel != idx, ])
@@ -42,8 +42,8 @@ cv_mse_vec_b = rep(NA, n_round)
 for (idx in 1:n_round) {
   lr_model_b = lm(formula = NumBlockedDays2016Q3 ~ Neighborhood + Superhost + OverallRating + NumberofReviews + ListingType + PropertyID +
                     ResponseRate + Bedrooms + Bathrooms + PropertyType + PublishedMonthlyRate + PublishedNightlyRate + NumberofPhotos + HostID +
-                    BookingJan + BookingApr + BookingMay + BookingJun + BlockedJan + BlockedFeb + 
-                    BlockedApr + BlockedMay + BlockedQ1 + BlockedQ2 + ListPriceQ2 +
+                    BookingJan + BookingApr + BookingMay + BookingJun + BlockedJan + BlockedFeb + CreatedDate + ResponseTimemin + ExtraPeopleFee +
+                    BlockedApr + BlockedMay + BlockedQ1 + BlockedQ2 + ListPriceQ2 + CleaningFee + MinimumStay + BusinessReady + 
                     ListPriceApr + ListPriceJun + LogBookingApr + LogBookingMay +
                     LogBookingQ2 + LogBlockedQ1 + LogBlockedQ2 + LogPNR + LogPMR + LogPWR + LogLPJan + LogLPJun, 
                 data = property_info_train[property_info_train$CVLabel != idx, ])
