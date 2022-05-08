@@ -186,8 +186,6 @@ property_info = merge(x = property_info, y = agg_price_jun, by = 'PropertyID', a
 property_info$ListPriceJun[is.na(property_info$ListPriceJun)] = 0
 
 #### Anomalies
-sum(is.na(property_info$PropertyID))
-
 tb_neighborhood = table(property_info$Neighborhood)
 rare_neighborhood = names(tb_neighborhood)[tb_neighborhood<=20]
 property_info$Neighborhood[property_info$Neighborhood %in% rare_neighborhood] = "rare neighborhood"
@@ -195,35 +193,50 @@ property_info$Neighborhood[property_info$Neighborhood %in% rare_neighborhood] = 
 property_info$Neighborhood[is.na(property_info$Neighborhood)] = "unknown neighborhood"
 property_info$Superhost[is.na(property_info$Superhost)] = "unknown host type"
 
+# mean(is.na(property_info$ExtraPeopleFee))
+
 property_info$NumberofReviews[is.na(property_info$NumberofReviews)] = mean(property_info$NumberofReviews, na.rm = TRUE)
-
-property_info$PublishedMonthlyRate[is.na(property_info$PublishedMonthlyRate)] = 0
-property_info$PublishedWeeklyRate[is.na(property_info$PublishedWeeklyRate)] = 0
-
+property_info$PublishedMonthlyRate[is.na(property_info$PublishedMonthlyRate)] = mean(property_info$PublishedMonthlyRate, na.rm = TRUE)
+property_info$PublishedWeeklyRate[is.na(property_info$PublishedWeeklyRate)] = mean(property_info$PublishedWeeklyRate, na.rm = TRUE)
 property_info$ResponseRate[is.na(property_info$ResponseRate)] = 0
-property_info$Bedrooms[is.na(property_info$Bedrooms)] = 0
-property_info$Bathrooms[is.na(property_info$Bathrooms)] = 0
+property_info$Bedrooms[is.na(property_info$Bedrooms)] = mean(property_info$Bedrooms, na.rm = TRUE)
+property_info$Bathrooms[is.na(property_info$Bathrooms)] = mean(property_info$Bathrooms, na.rm = TRUE)
 property_info$OverallRating[is.na(property_info$OverallRating)] = 0
 
-property_info$PropertyType[is.na(property_info$PropertyType)] = 0
-property_info$ListingType[is.na(property_info$ListingType)] = 0
+property_info$NumberofPhotos[is.na(property_info$NumberofPhotos)] = mean(property_info$NumberofPhotos, na.rm = TRUE)
 
-property_info$NumberofPhotos[is.na(property_info$NumberofPhotos)] = 0
-property_info$HostID[is.na(property_info$HostID)] = 0
+property_info$HostID[is.na(property_info$HostID)] = mean(property_info$HostID, na.rm = TRUE)
 
 property_info$ResponseTimemin[is.na(property_info$ResponseTimemin)] = 0
 
-sum(is.na(property_info$CancellationPolicy))
+property_info$CancellationPolicy[is.na(property_info$CancellationPolicy)] = "unknown cancellation policy"
+
 property_info$CleaningFee[is.na(property_info$CleaningFee)] = 0
 
 property_info$SecurityDeposit[is.na(property_info$SecurityDeposit)] = 0
 
 property_info$ExtraPeopleFee[is.na(property_info$ExtraPeopleFee)] = 0
 
+# new Data anomalies
+## rare property type
+tb_property_type = table(property_info$PropertyType)
+rare_property_types = names(tb_property_type)[tb_property_type<=50]
+property_info$PropertyType[property_info$PropertyType %in% rare_property_types] = "rare property type"
+
 ##################
+# histogram
+# hist(property_info$SecurityDeposit, xlim = c(0, 6000))
+
 # Outliers
-property_info$NumberofReviews[property_info$NumberofReviews>150]=150
-property_info$PublishedMonthlyRate[property_info$PublishedMontlyRate>20000]=20000
+property_info$NumberofReviews[property_info$NumberofReviews>150] = 150
+property_info$PublishedMonthlyRate[property_info$PublishedMonthlyRate>20000] = 20000
+property_info$PublishedNightlyRate[property_info$PublishedNightlyRate>1000] = 1000
+property_info$NumberofPhotos[property_info$NumberofPhotos>60] = 60
+property_info$ExtraPeopleFee[property_info$ExtraPeopleFee>80] = 80
+property_info$CleaningFee[property_info$CleaningFee>200] = 200
+property_info$MinimumStay[property_info$MinimumStay>40] = 40
+property_info$ResponseTimemin[property_info$ResponseTimemin>1400] = 1400
+property_info$SecurityDeposit[property_info$SecurityDeposit>2000] = 2000
 
 # log
 property_info$LogBookingQ1 = log(property_info$BookingQ1)
@@ -283,6 +296,12 @@ property_info$LogPMR[property_info$LogPMR =="-Inf"] = 0
 property_info$LogPWR = log(property_info$PublishedWeeklyRate)
 property_info$LogPWR[property_info$LogPWR =="-Inf"] = 0
 
+property_info$LogLPQ1 = log(property_info$ListPriceQ1)
+property_info$LogLPQ1[property_info$LogLPQ1 =="-Inf"] = 0
+
+property_info$LogLPQ2 = log(property_info$ListPriceQ2)
+property_info$LogLPQ2[property_info$LogLPQ2 =="-Inf"] = 0
+
 property_info$LogLPJan = log(property_info$ListPriceJan)
 property_info$LogLPJan[property_info$LogLPJan =="-Inf"] = 0
 
@@ -301,14 +320,11 @@ property_info$LogLPMay[property_info$LogLPMay =="-Inf"] = 0
 property_info$LogLPJun = log(property_info$ListPriceJun)
 property_info$LogLPJun[property_info$LogLPJun =="-Inf"] = 0
 
-# histogram
-# hist(property_info$ResponseTimemin)
+property_info$Logcf = log(property_info$CleaningFee)
+property_info$Logcf[property_info$Logcf =="-Inf"] = 0
 
-# new Data anomalies
-## rare property type
-tb_property_type = table(property_info$PropertyType)
-rare_property_types = names(tb_property_type)[tb_property_type<=50]
-property_info$PropertyType[property_info$PropertyType %in% rare_property_types] = "rare property type"
+property_info$Logcf = log(property_info$CleaningFee)
+property_info$Logcf[property_info$Logcf =="-Inf"] = 0
 
 # Data set
 property_info_test = property_info[property_info$PropertyID %in% PropertyID_test, ]
@@ -318,27 +334,27 @@ property_info_train = merge(x = property_info_train, y = blocked_2016Q3_train, b
 property_info_train = merge(x = property_info_train, y = price_2016Q3_train, by = 'PropertyID', all.x = TRUE)
 
 # booking regression
-reg_bookingQ3 = lm(formula = NumReserveDays2016Q3 ~ ResponseRate + OverallRating + NumberofReviews + LogPNR + LogPMR + LogPWR + NumberofPhotos +
-                     PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + ListingType + PropertyType + PropertyID + HostID + BusinessReady +
-                     BookingQ2 + BlockedQ1 + BlockedQ2 + BookingJun + BlockedMar + BlockedMay + BlockedJun + CreatedDate +  MaxGuests + ExtraPeopleFee + 
-                     BookingMar + BookingApr + BlockedJan + CleaningFee + InstantbookEnabled + Latitude + Longitude +
-                     LogBookingQ2 + LogBlockedQ2 + LogBookingApr + LogBookingJun + LogBlockedJan +
-                     ListPriceJan + ListPriceMar + ListPriceJun + LogLPJan + LogLPFeb + LogLPMar + LogLPApr + LogLPMay + LogLPJun, 
+reg_bookingQ3 = lm(formula = NumReserveDays2016Q3 ~ ResponseRate +  NumberofReviews + NumberofPhotos + CreatedDate + ExtraPeopleFee +  
+                     PublishedMonthlyRate + PublishedNightlyRate + PropertyType + BusinessReady + Latitude + Longitude + CleaningFee +
+                     ResponseTimemin + Superhost + LogPNR + LogPWR + 
+                     BookingQ2 + BookingMar + BookingApr + BookingJun + BlockedQ1 + BlockedMay + BlockedQ2 +  
+                     LogBookingQ2 + LogBookingApr + LogBookingMay + LogBookingJun + LogBlockedJan + LogBlockedMar +  
+                     ListPriceJan + ListPriceFeb +  ListPriceMar + ListPriceApr + ListPriceJun + LogLPQ1 + LogLPQ2 + LogLPFeb + LogLPApr, 
                    data = property_info_train)
 
 # blocked regression
-reg_blockedQ3 = lm(formula = NumBlockedDays2016Q3 ~ Neighborhood + Superhost + OverallRating + NumberofReviews + ListingType + PropertyID +
-                     ResponseRate + Bedrooms + Bathrooms + PropertyType + PublishedMonthlyRate + PublishedNightlyRate + NumberofPhotos + HostID +
-                     BookingJan + BookingApr + BookingMay + BookingJun + BlockedJan + BlockedFeb + CreatedDate + ResponseTimemin + ExtraPeopleFee +
-                     BlockedApr + BlockedMay + BlockedQ1 + BlockedQ2 + ListPriceQ2 + CleaningFee + MinimumStay + BusinessReady + 
-                     ListPriceApr + ListPriceJun + LogBookingApr + LogBookingMay + 
-                     LogBookingQ2 + LogBlockedQ1 + LogBlockedQ2 + LogPNR + LogPMR + LogPWR + LogLPJan + LogLPJun, data = property_info_train)
+reg_blockedQ3 = lm(formula = NumBlockedDays2016Q3 ~ Superhost + OverallRating + NumberofReviews + ListingType + PropertyID + SecurityDeposit +
+                     ResponseRate + Bathrooms + PropertyType + NumberofPhotos + HostID + InstantbookEnabled + Longitude + CreatedDate +
+                     ResponseTimemin + ExtraPeopleFee + CleaningFee + LogPWR +
+                     BookingApr + BookingJun + LogBookingQ1 +  LogBookingQ2 + LogBookingApr + LogBookingMay +
+                     BlockedJan + BlockedApr + BlockedMay + BlockedQ1 + BlockedQ2 + LogLPQ1 + LogLPQ2 + LogLPMar + LogLPApr + LogLPJun +
+                     ListPriceQ2 + ListPriceApr + ListPriceMay + ListPriceJun + 
+                     LogBlockedQ1 + LogBlockedQ2 + LogBlockedJan + LogBlockedFeb + LogBlockedMar + LogBlockedApr + LogBlockedMay, 
+                   data = property_info_train)
 
 # price regression
-reg_priceQ3 = lm(formula = Price2016Q3 ~ NumberofReviews + ResponseRate + Bathrooms + ListingType + PropertyType + NumberofPhotos + BusinessReady +
-                   PublishedMonthlyRate + PublishedNightlyRate + PublishedWeeklyRate + LogPNR + LogPMR + MaxGuests + CleaningFee + MinimumStay +
-                   BlockedQ1 + BlockedQ2 + BookingJan + BookingFeb + BlockedMar + BookingJun + ListPriceJan + ListPriceJun + SecurityDeposit + Latitude + Longitude +
-                   LogBookingMar + LogBookingQ2 + LogLPMar + LogLPApr, data = property_info_train)
+reg_priceQ3 = lm(formula = Price2016Q3 ~ ResponseRate + NumberofPhotos + PublishedNightlyRate + LogPNR + Logcf + InstantbookEnabled + Latitude + 
+                   BlockedMar + ListPriceJun + LogBookingMar + LogLPMar, data = property_info_train)
 
 # save
 save(property_info_train, property_info_test, file = 'C:/Users/dongw/OneDrive - Indiana University/Desktop/K353-project2/k353-airbnb-project/data-cleansing.rdata')
